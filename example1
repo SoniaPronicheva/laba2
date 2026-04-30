@@ -1,0 +1,52 @@
+import java.util.Scanner;
+
+class NewtonSimple {
+
+    // f(x) = x³ - 2x - 5
+    public static double f(double x) {
+        return x * x * x - 2 * x - 5;
+    }
+
+    // f'(x) = 3x² - 2
+    public static double df(double x) {
+        return 3 * x * x - 2;
+    }
+
+    public static void main(String[] args) {
+        double x = 2.0;
+        double eps = 0.0001;
+        int iterations = 0;
+
+        System.out.println("Решение уравнения x³ - 2x - 5 = 0");
+        System.out.println("Начальное приближение: x₀ = " + x);
+        System.out.println("Точность: " + eps);
+        System.out.println();
+
+        while (true) {
+            iterations++;
+            double fx = f(x);
+            double dfx = df(x);
+
+            if (Math.abs(dfx) < 1e-15) {
+                System.out.println("Производная равна нулю!");
+                break;
+            }
+
+            double x_new = x - fx / dfx;
+            double delta = Math.abs(x_new - x);
+
+            System.out.printf("Итерация %d: x = %.8f, f(x) = %.10f, Δx = %.8f%n",
+                    iterations, x, fx, delta);
+
+            if (delta < eps) {
+                x = x_new;
+                break;
+            }
+
+            x = x_new;
+        }
+        System.out.printf("Корень уравнения: x = %.8f%n", x);
+        System.out.printf("Количество итераций: %d%n", iterations);
+        System.out.printf("Значение функции: f(x) = %.10f%n", f(x));
+    }
+}
