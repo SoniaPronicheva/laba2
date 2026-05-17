@@ -12,9 +12,8 @@ class NewtonSimple {
         return 3 * x * x - 2;
     }
 
-    public static void main(String[] args) {
-        double x = 2.0;
-        double eps = 0.0001;
+    public static void solveNewtonMethod(double initialX, double eps) {
+        double x = initialX;
         int iterations = 0;
 
         System.out.println("Решение уравнения x³ - 2x - 5 = 0");
@@ -48,5 +47,70 @@ class NewtonSimple {
         System.out.printf("Корень уравнения: x = %.8f%n", x);
         System.out.printf("Количество итераций: %d%n", iterations);
         System.out.printf("Значение функции: f(x) = %.10f%n", f(x));
+    }
+    public static double findRootNewton(double initialX, double eps) {
+        double x = initialX;
+        int iterations = 0;
+
+        while (true) {
+            iterations++;
+            double fx = f(x);
+            double dfx = df(x);
+
+            if (Math.abs(dfx) < 1e-15) {
+                System.out.println("Предупреждение: Производная равна нулю!");
+                return Double.NaN;             }
+
+            double x_new = x - fx / dfx;
+            double delta = Math.abs(x_new - x);
+
+            if (delta < eps) {
+                System.out.println("Количество итераций: " + iterations);
+                return x_new;
+            }
+
+            x = x_new;
+        }
+    }
+    public static NewtonResult findRootWithDetails(double initialX, double eps) {
+        double x = initialX;
+        int iterations = 0;
+
+        while (true) {
+            iterations++;
+            double fx = f(x);
+            double dfx = df(x);
+
+            if (Math.abs(dfx) < 1e-15) {
+                return new NewtonResult(Double.NaN, iterations, false);
+            }
+
+            double x_new = x - fx / dfx;
+            double delta = Math.abs(x_new - x);
+
+            if (delta < eps) {
+                return new NewtonResult(x_new, iterations, true);
+            }
+
+            x = x_new;
+        }
+    }
+
+    public static void main(String[] args) {
+        double x = 2.0;
+        double eps = 0.0001;
+        solveNewtonMethod(x, eps);
+    }
+}
+
+class NewtonResult {
+    double root;
+    int iterations;
+    boolean success;
+
+    NewtonResult(double root, int iterations, boolean success) {
+        this.root = root;
+        this.iterations = iterations;
+        this.success = success;
     }
 }
